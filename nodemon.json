@@ -1,0 +1,7 @@
+// Configuração para que o sucrase consiga executar conjunto ao nodemon
+
+{
+  "execMap": {
+    "js": "node -r sucrase/register"
+  }
+}

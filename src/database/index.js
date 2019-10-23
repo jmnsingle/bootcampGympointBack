@@ -3,9 +3,11 @@ import databaseConfig from '../config/database';
 
 import User from '../app/models/User';
 import Student from '../app/models/Student';
+import Plan from '../app/models/Plan';
+import Enrollment from '../app/models/Enrollment';
 
 // Array que recebe todos os meus models
-const models = [User, Student];
+const models = [User, Student, Plan, Enrollment];
 
 class Database {
   constructor() {
@@ -16,12 +18,9 @@ class Database {
     this.connection = new Sequelize(databaseConfig);
 
     // Map para todos os models receberem o método init passando a conexão
-    models.map(model => model.init(this.connection));
-
-    // Map para todos os models receberem o método associate passando a conexão
-    models.map(
-      model => model.associate && model.associate(this.connection.models)
-    );
+    models
+      .map(model => model.init(this.connection))
+      .map(model => model.associate && model.associate(this.connection.models));
   }
 }
 

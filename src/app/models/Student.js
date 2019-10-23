@@ -16,6 +16,7 @@ class Student extends Model {
         sequelize,
       }
     );
+    return this;
   }
 
   // Médoto para fazer um relacionamento de 1-N com a tabela Users, pegando as tabelas por parâmetro

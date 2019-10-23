@@ -24,7 +24,7 @@ class StudentController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { user_id } = req.params;
+    const user_id = req.userId;
 
     const { name, email, birth_date, weight, height } = req.body;
 
@@ -52,6 +52,18 @@ class StudentController {
     });
 
     return res.json(student);
+  }
+
+  async index(req, res) {
+    const user = await User.findByPk(req.userId);
+
+    // Verifico se existe um administrador para buscar os estudantes
+    if (!user) {
+      return res.status(400).json({ error: 'User not found' });
+    }
+    const students = await Student.findAll();
+
+    return res.json(students);
   }
 
   async update(req, res) {

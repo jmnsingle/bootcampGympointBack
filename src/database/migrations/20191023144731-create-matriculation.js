@@ -1,39 +1,35 @@
-// Migration da tabela Students
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('students', {
+    return queryInterface.createTable('enrollments', {
       id: {
         type: Sequelize.INTEGER,
+        primaryKey: true,
         autoIncrement: true,
         allowNull: false,
-        primaryKey: true,
       },
-      // Essa é a ForeignKey do usuário
-      user_id: {
+      student_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: 'users', key: 'id' },
+        references: { model: 'students', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
-      name: {
-        type: Sequelize.STRING,
+      plan_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: 'plans', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
+      start_date: {
+        type: Sequelize.DATE,
         allowNull: false,
       },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      birth_date: {
-        type: Sequelize.STRING,
+      end_date: {
+        type: Sequelize.DATE,
         allowNull: false,
       },
-      weight: {
-        type: Sequelize.FLOAT,
-        allowNull: false,
-      },
-      height: {
+      price: {
         type: Sequelize.FLOAT,
         allowNull: false,
       },
@@ -49,6 +45,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('students');
+    return queryInterface.dropTable('enrollments');
   },
 };

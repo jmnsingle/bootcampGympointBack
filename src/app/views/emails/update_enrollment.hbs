@@ -37,13 +37,13 @@
   <div class="container">
     <div class="title">
       <img src="./logo.png" width="200px" height="120px" alt="Gympoint" >
-      <h1>Parabéns {{ student }}, você está no Gympoint agora! </h1>
+      <h1>{{ student }}, atualização realizada com sucesso. </h1>
     </div>
     <div class="content">
-      <p>Seu cadastro foi realizado com sucesso. Abaixo estão os dados da sua matrícula</p>
-      <p>Você assinou o plano <strong>{{ plan }}</strong> no valor mensal de <strong>R${{ mensal }},00/mês</strong></p>
+      <p>Sua matrícula no <strong>Gympoint</strong> acaba de ser atualizada. Abaixo estão os dados da atualização</p>
+      <p>Você atualizou para o plano <strong>{{ plan }}</strong> no valor mensal de <strong>R${{ mensal }},00/mês</strong></p>
       <p>Seu plano se inicia no <strong>dia {{ start_date }} e termina no dia {{ end_date }}</strong></p>
-      <p>Desfrute de todos os benefícios que puder, sinta-se a vontade</p>
+      <p>Sinta-se a vontade, para mudar de plano quando desejar.</p>
     </div>
   </div>
   {{> footer }}

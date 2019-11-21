@@ -17,8 +17,16 @@ routes.post('/sessions', SessionController.store);
 
 routes.post('/students/:student_id/checkins', CheckinController.store);
 routes.get('/students/:student_id/checkins', CheckinController.index);
+routes.get('/students/:student_id', CheckinController.show);
 
-routes.post('/students/:id/help_orders', HelpOrderController.store);
+routes.post(
+  '/students/:student_id/help_orders/question',
+  HelpOrderController.store
+);
+routes.get(
+  '/students/:student_id/help_orders/answer',
+  HelpOrderController.index
+);
 
 // Midleware de autenticação via JWT
 routes.use(authMidleware);

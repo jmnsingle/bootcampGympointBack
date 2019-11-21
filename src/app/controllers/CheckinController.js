@@ -38,10 +38,10 @@ class CheckinController {
       checkinValid.dt_checkin = new Date();
     }
 
-    if (checkinValid.count > 4) {
+    if (checkinValid.count > 20) {
       return res
         .status(400)
-        .json({ error: 'you have reached your weekly check-in limit' });
+        .json({ error: 'You have reached your weekly check-in limit' });
     }
 
     const checkin = await Checkin.create({
@@ -72,7 +72,27 @@ class CheckinController {
 
     const checkins = await Checkin.findAll({ where: { student_id } });
 
-    return res.json(checkins);
+    return res.json({ checkins });
+  }
+
+  async show(req, res) {
+    const { student_id } = req.params;
+
+    const studentExist = await Student.findByPk(student_id);
+
+    if (!studentExist) {
+      return res.status(400).json({ error: 'Student not found' });
+    }
+
+    const enrollmentExist = await Enrollment.findOne({
+      where: { student_id },
+    });
+
+    if (!enrollmentExist) {
+      return res.status(400).json({ error: 'Student not registered' });
+    }
+
+    return res.json(enrollmentExist);
   }
 }
 

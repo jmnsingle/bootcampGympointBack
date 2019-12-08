@@ -19,13 +19,6 @@ class EnrollmentController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const userExist = await User.findByPk(req.userId);
-
-    // Verifico se existe um administrador para realizar a matrícula
-    if (!userExist) {
-      return res.status(400).json({ error: 'User not found' });
-    }
-
     const { student_id, plan_id } = req.params;
 
     const estudentExist = await Student.findByPk(student_id);
@@ -46,7 +39,7 @@ class EnrollmentController {
 
     // Verifico se o estudante já está matriculado
     if (enrollmentExist) {
-      return res.status(400).json({ error: 'Student already is registered' });
+      return res.status(401).json({ error: 'Student already is registered' });
     }
 
     const { start_date } = req.body;

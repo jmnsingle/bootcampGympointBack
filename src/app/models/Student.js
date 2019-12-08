@@ -18,11 +18,6 @@ class Student extends Model {
     );
     return this;
   }
-
-  // Médoto para fazer um relacionamento de 1-N com a tabela Users, pegando as tabelas por parâmetro
-  static associate(models) {
-    this.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
-  }
 }
 
 export default Student;

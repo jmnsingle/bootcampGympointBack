@@ -1,7 +1,6 @@
 import * as Yup from 'yup';
 
 import Student from '../models/Student';
-import User from '../models/User';
 
 class StudentController {
   async store(req, res) {
@@ -10,7 +9,7 @@ class StudentController {
       email: Yup.string()
         .email()
         .required(),
-      birth_date: Yup.string().required(),
+      birth_date: Yup.date().required(),
       weight: Yup.number()
         .positive()
         .required(),
@@ -24,16 +23,7 @@ class StudentController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const user_id = req.userId;
-
     const { name, email, birth_date, weight, height } = req.body;
-
-    const user = await User.findByPk(user_id);
-
-    // Verifico se existe um administrador para cadastrar o estudante
-    if (!user) {
-      return res.status(400).json({ error: 'User not found' });
-    }
 
     const studentExist = await Student.findOne({ where: { email } });
 
@@ -48,19 +38,12 @@ class StudentController {
       birth_date,
       weight,
       height,
-      user_id,
     });
 
     return res.json(student);
   }
 
   async index(req, res) {
-    const user = await User.findByPk(req.userId);
-
-    // Verifico se existe um administrador para buscar os estudantes
-    if (!user) {
-      return res.status(400).json({ error: 'User not found' });
-    }
     const students = await Student.findAll();
 
     return res.json(students);
@@ -86,16 +69,9 @@ class StudentController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { user_id, student_id } = req.params;
+    const { student_id } = req.params;
 
     const { name, email, birth_date, weight, height } = req.body;
-
-    const user = await User.findByPk(user_id);
-
-    // Verifico se existe um administrador para atualizar o estudante
-    if (!user) {
-      return res.status(400).json({ error: 'User not found' });
-    }
 
     const studentExist = await Student.findByPk(student_id);
 
@@ -121,7 +97,6 @@ class StudentController {
     });
 
     return res.json({
-      user_id,
       student,
       name,
       email,
@@ -129,6 +104,21 @@ class StudentController {
       weight,
       height,
     });
+  }
+
+  async delete(req, res) {
+    const { student_id } = req.params;
+
+    const studentExist = await Student.findByPk(student_id);
+
+    // Verifico se existe um studante para atualizar
+    if (!studentExist) {
+      return res.status(400).json({ error: 'Student not found' });
+    }
+
+    Student.destroy({ where: { id: student_id } });
+
+    return res.json();
   }
 }
 

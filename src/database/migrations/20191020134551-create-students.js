@@ -8,14 +8,6 @@ module.exports = {
         allowNull: false,
         primaryKey: true,
       },
-      // Essa é a ForeignKey do usuário
-      user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: { model: 'users', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL',
-      },
       name: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -26,7 +18,7 @@ module.exports = {
         unique: true,
       },
       birth_date: {
-        type: Sequelize.STRING,
+        type: Sequelize.DATEONLY,
         allowNull: false,
       },
       weight: {

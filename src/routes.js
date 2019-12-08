@@ -33,9 +33,11 @@ routes.use(authMidleware);
 
 // Todas as rotas abaixo precisam de autenticação
 routes.put('/users', UserController.update);
-routes.post('/users/:user_id/students', StudentController.store);
-routes.put('/users/:student_id/students', StudentController.update);
+
+routes.post('/students', StudentController.store);
 routes.get('/students', StudentController.index);
+routes.put('/students/:student_id', StudentController.update);
+routes.delete('/students/:student_id', StudentController.delete);
 
 routes.post('/plans', PlanController.store);
 routes.get('/plans', PlanController.index);
@@ -43,7 +45,7 @@ routes.put('/plans/:plan_id', PlanController.update);
 routes.delete('/plans/:plan_id', PlanController.delete);
 
 routes.post('/enrollments/:plan_id/:student_id', EnrollmentController.store);
-routes.get('/enrollments', EnrollmentController.index);
+routes.get('/enrollments', EnrollmentController.show);
 routes.put('/enrollments/:id', EnrollmentController.update);
 routes.delete('/enrollments/:id', EnrollmentController.delete);
 

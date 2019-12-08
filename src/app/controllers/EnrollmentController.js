@@ -92,15 +92,22 @@ class EnrollmentController {
     return res.json(enrollment);
   }
 
-  async index(req, res) {
-    const userExist = await User.findByPk(req.userId);
-
-    // Verifico se existe um administrador para realizar a matrícula
-    if (!userExist) {
-      return res.status(400).json({ error: 'User not found' });
-    }
-
-    const enrollments = await Enrollment.findAll();
+  async show(req, res) {
+    const enrollments = await Enrollment.findAll({
+      attributes: ['id', 'start_date', 'end_date', 'price', 'active'],
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Plan,
+          as: 'plan',
+          attributes: ['id', 'title'],
+        },
+      ],
+    });
 
     return res.json(enrollments);
   }

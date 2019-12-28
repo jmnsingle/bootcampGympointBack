@@ -12,44 +12,42 @@ import authMidleware from './app/midlewares/auth';
 
 const routes = new Router();
 
-routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
 
-routes.post('/students/:student_id/checkins', CheckinController.store);
-routes.get('/students/:student_id/checkins', CheckinController.index);
-routes.get('/students/:student_id', CheckinController.show);
+routes.post('/checkin/:student_id/checkins', CheckinController.store);
+routes.get('/checkin/:student_id/checkins', CheckinController.index);
+routes.get('/checkin/:student_id', CheckinController.show);
 
-routes.post(
-  '/students/:student_id/help_orders/question',
-  HelpOrderController.store
-);
-routes.get(
-  '/students/:student_id/help_orders/answer',
-  HelpOrderController.index
-);
+routes.post('/help_orders/:id/question', HelpOrderController.store);
+routes.get('/help_orders/:id/answer', HelpOrderController.index);
 
 // Midleware de autenticação via JWT
 routes.use(authMidleware);
 
 // Todas as rotas abaixo precisam de autenticação
+routes.post('/users', UserController.store);
 routes.put('/users', UserController.update);
 
 routes.post('/students', StudentController.store);
-routes.get('/students', StudentController.index);
-routes.put('/students/:student_id', StudentController.update);
-routes.delete('/students/:student_id', StudentController.delete);
+routes.get('/students', StudentController.show);
+routes.get('/students/:id', StudentController.index);
+routes.put('/students/:id', StudentController.update);
+routes.delete('/students/:id', StudentController.delete);
 
 routes.post('/plans', PlanController.store);
-routes.get('/plans', PlanController.index);
-routes.put('/plans/:plan_id', PlanController.update);
-routes.delete('/plans/:plan_id', PlanController.delete);
+routes.get('/plans', PlanController.show);
+routes.get('/plans/:id', PlanController.index);
+routes.put('/plans/:id', PlanController.update);
+routes.delete('/plans/:id', PlanController.delete);
 
 routes.post('/enrollments/:plan_id/:student_id', EnrollmentController.store);
 routes.get('/enrollments', EnrollmentController.show);
+routes.get('/enrollments/:id', EnrollmentController.index);
 routes.put('/enrollments/:id', EnrollmentController.update);
 routes.delete('/enrollments/:id', EnrollmentController.delete);
 
-routes.get('/students/:id/help_orders', HelpOrderAdmController.index);
+routes.get('/admin/:id/help_orders', HelpOrderAdmController.index);
+routes.get('/admin/help_orders', HelpOrderAdmController.show);
 routes.put('/help-orders/:id/answer', HelpOrderAdmController.update);
 
 export default routes;

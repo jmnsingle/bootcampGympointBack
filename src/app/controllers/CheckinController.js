@@ -53,7 +53,7 @@ class CheckinController {
     return res.json(checkin);
   }
 
-  async index(req, res) {
+  async show(req, res) {
     const { student_id } = req.params;
 
     const studentExist = await Student.findByPk(student_id);
@@ -75,7 +75,7 @@ class CheckinController {
     return res.json({ checkins });
   }
 
-  async show(req, res) {
+  async index(req, res) {
     const { student_id } = req.params;
 
     const studentExist = await Student.findByPk(student_id);

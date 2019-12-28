@@ -1,6 +1,8 @@
 import * as Yup from 'yup';
 import { isBefore, parseISO, addMonths, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
+import Sequelize from 'sequelize';
+import configDataBase from '../../config/database';
 
 import Enrollment from '../models/Enrollment';
 import User from '../models/User';
@@ -8,6 +10,7 @@ import Plan from '../models/Plan';
 import Student from '../models/Student';
 import Mail from '../../lib/Mail';
 
+const sequelize = new Sequelize(configDataBase);
 class EnrollmentController {
   async store(req, res) {
     const schema = Yup.object().shape({
@@ -39,7 +42,7 @@ class EnrollmentController {
 
     // Verifico se o estudante já está matriculado
     if (enrollmentExist) {
-      return res.status(401).json({ error: 'Student already is registered' });
+      return res.status(400).json({ error: 'Student already is registered' });
     }
 
     const { start_date } = req.body;
@@ -47,7 +50,6 @@ class EnrollmentController {
     const dateStart = parseISO(start_date);
 
     const dateEnd = addMonths(dateStart, planExist.duration);
-
     // Verifico se a data inicial é menor que a data atual
     if (isBefore(dateStart, new Date())) {
       return res.status(400).json({ error: 'Past dates are not permitted' });
@@ -86,7 +88,10 @@ class EnrollmentController {
   }
 
   async show(req, res) {
+    const { page } = req.query;
     const enrollments = await Enrollment.findAll({
+      limit: 10,
+      offset: (page - 1) * 10,
       attributes: ['id', 'start_date', 'end_date', 'price', 'active'],
       include: [
         {
@@ -103,6 +108,36 @@ class EnrollmentController {
     });
 
     return res.json(enrollments);
+  }
+
+  async index(req, res) {
+    /* const enrollments = await Enrollment.findByPk(req.params.id, {
+      attributes: ['id', 'start_date', 'end_date', 'price', 'active'],
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Plan,
+          as: 'plan',
+          attributes: ['id', 'title'],
+        },
+      ],
+    }); */
+
+    const enrollment = await sequelize.query(
+      `select a.id, a.start_date, a.end_date, a.price, b.id as student_id,
+      b.name, c.id as plan_id, c.title, c.duration from enrollments a
+      left join students b on a.student_id = b.id
+      left join plans c on a.plan_id = c.id where a.id = ${req.params.id}`,
+      {
+        type: Sequelize.QueryTypes.SELECT,
+      }
+    );
+
+    return res.json(enrollment[0]);
   }
 
   async update(req, res) {
@@ -145,7 +180,7 @@ class EnrollmentController {
     const { start_date, plan_id } = req.body;
 
     const plan = await Plan.findOne({ where: { id: plan_id } });
-
+    // Verifico se o plano existe
     if (!plan) {
       return res.status(400).json({ error: 'Plan does not exist' });
     }
@@ -174,7 +209,7 @@ class EnrollmentController {
 
     await Mail.sendMail({
       to: `${enrollmentExist.student.name} <${enrollmentExist.student.email}>`,
-      sucject: 'Matrícula feita com sucesso',
+      sucject: 'Matrícula atualizada com sucesso',
       // text: 'Você acaba de realizar sua matrícula na Gympoint',
       template: 'update_enrollment',
       context: {

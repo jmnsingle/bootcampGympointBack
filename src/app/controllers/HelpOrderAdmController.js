@@ -28,6 +28,23 @@ class HelpOrderAdmController {
     return res.json(questions);
   }
 
+  async show(req, res) {
+    const { page } = req.query;
+    const helps = await HelpOrder.findAll({
+      limit: 10,
+      offset: (page - 1) * 10,
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['id', 'name'],
+        },
+      ],
+    });
+
+    return res.json(helps);
+  }
+
   async update(req, res) {
     const schema = Yup.object().shape({
       answer: Yup.string().required(),

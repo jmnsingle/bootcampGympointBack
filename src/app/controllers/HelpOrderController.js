@@ -15,16 +15,16 @@ class HelpOrderController {
 
     const { question } = req.body;
 
-    const { student_id } = req.params;
+    const { id } = req.params;
 
-    const student = await Student.findByPk(student_id);
+    const student = await Student.findByPk(id);
 
     if (!student) {
       return res.status(400).json({ error: 'Studend not found' });
     }
 
     const questions = await HelpOrder.create({
-      student_id,
+      student_id: id,
       question,
     });
 
@@ -32,15 +32,20 @@ class HelpOrderController {
   }
 
   async index(req, res) {
-    const { student_id } = req.params;
+    const { id } = req.params;
+    const { page } = req.query;
 
-    const studentExist = await Student.findByPk(student_id);
+    const studentExist = await Student.findByPk(id);
 
     if (!studentExist) {
-      return res.status(400).json({ error: 'Student nt found' });
+      return res.status(400).json({ error: 'Student not found' });
     }
 
-    const helps = await HelpOrder.findAll({ where: { student_id } });
+    const helps = await HelpOrder.findAll({
+      limit: 10,
+      offset: (page - 1) * 10,
+      where: { id },
+    });
 
     return res.json(helps);
   }

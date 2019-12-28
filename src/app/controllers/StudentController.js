@@ -43,8 +43,18 @@ class StudentController {
     return res.json(student);
   }
 
+  async show(req, res) {
+    const { page } = req.query;
+    const students = await Student.findAll({
+      limit: 10,
+      offset: (page - 1) * 10,
+    });
+
+    return res.json(students);
+  }
+
   async index(req, res) {
-    const students = await Student.findAll();
+    const students = await Student.findByPk(req.params.id);
 
     return res.json(students);
   }
@@ -69,11 +79,11 @@ class StudentController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const { student_id } = req.params;
+    const { id } = req.params;
 
     const { name, email, birth_date, weight, height } = req.body;
 
-    const studentExist = await Student.findByPk(student_id);
+    const studentExist = await Student.findByPk(id);
 
     // Verifico se existe um studante para atualizar
     if (!studentExist) {
@@ -93,7 +103,7 @@ class StudentController {
     }
 
     const student = await Student.update(req.body, {
-      where: { id: student_id },
+      where: { id },
     });
 
     return res.json({

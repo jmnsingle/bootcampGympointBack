@@ -31,15 +31,26 @@ class PlanController {
     return res.json(plan);
   }
 
-  async index(req, res) {
-    const userExist = await User.findByPk(req.userId);
+  async show(req, res) {
+    /* const userExist = await User.findByPk(req.userId);
 
     // Verifico se existe um administrador para buscar os planos
     if (!userExist) {
       return res.status(400).json({ error: 'User not found' });
-    }
+    } */
 
-    const plan = await Plan.findAll();
+    const { page } = req.query;
+
+    const plans = await Plan.findAll({
+      limit: 10,
+      offset: (page - 1) * 10,
+    });
+
+    return res.json(plans);
+  }
+
+  async index(req, res) {
+    const plan = await Plan.findByPk(req.params.id);
 
     return res.json(plan);
   }
@@ -68,23 +79,24 @@ class PlanController {
     }
 
     const { title } = req.body;
-    const { plan_id } = req.params;
+    const { id } = req.params;
 
-    const planExist = await Plan.findByPk(plan_id);
+    const planExist = await Plan.findByPk(id);
 
     // Verifico se o plano existe
     if (!planExist) {
       return res.status(400).json({ error: 'Plan does not exist' });
     }
 
-    const titleExist = await Plan.findOne({ where: { title } });
-
     // Verifico se o título já existe
-    if (titleExist) {
-      return res.status(400).json({ error: 'Title already exist' });
+    if (title !== planExist.title) {
+      const titleExist = await Plan.findOne({ where: { title } });
+      if (titleExist) {
+        return res.status(400).json({ error: 'Title already exist' });
+      }
     }
 
-    const plan = await Plan.update(req.body, { where: { id: plan_id } });
+    const plan = await Plan.update(req.body, { where: { id } });
 
     return res.json(plan);
   }

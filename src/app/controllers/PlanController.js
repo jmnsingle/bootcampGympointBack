@@ -41,10 +41,15 @@ class PlanController {
 
     const { page } = req.query;
 
-    const plans = await Plan.findAll({
-      limit: 10,
-      offset: (page - 1) * 10,
-    });
+    let plans;
+    if (page) {
+      plans = await Plan.findAll({
+        limit: 10,
+        offset: (page - 1) * 10,
+      });
+    } else {
+      plans = await Plan.findAll();
+    }
 
     return res.json(plans);
   }
@@ -109,16 +114,16 @@ class PlanController {
       return res.status(400).json({ error: 'User not found' });
     }
 
-    const { plan_id } = req.params;
+    const { id } = req.params;
 
-    const planExist = await Plan.findByPk(plan_id);
+    const planExist = await Plan.findByPk(id);
 
     // Verifico se o plano existe
     if (!planExist) {
       return res.status(400).json({ error: 'Plan does not exist' });
     }
 
-    const plan = await Plan.destroy({ where: { id: plan_id } });
+    const plan = await Plan.destroy({ where: { id } });
 
     return res.json(plan);
   }

@@ -45,10 +45,15 @@ class StudentController {
 
   async show(req, res) {
     const { page } = req.query;
-    const students = await Student.findAll({
-      limit: 10,
-      offset: (page - 1) * 10,
-    });
+    let students;
+    if (page) {
+      students = await Student.findAll({
+        limit: 10,
+        offset: (page - 1) * 10,
+      });
+    } else {
+      students = await Student.findAll();
+    }
 
     return res.json(students);
   }
@@ -117,16 +122,16 @@ class StudentController {
   }
 
   async delete(req, res) {
-    const { student_id } = req.params;
+    const { id } = req.params;
 
-    const studentExist = await Student.findByPk(student_id);
+    const studentExist = await Student.findByPk(id);
 
     // Verifico se existe um studante para atualizar
     if (!studentExist) {
       return res.status(400).json({ error: 'Student not found' });
     }
 
-    Student.destroy({ where: { id: student_id } });
+    Student.destroy({ where: { id } });
 
     return res.json();
   }

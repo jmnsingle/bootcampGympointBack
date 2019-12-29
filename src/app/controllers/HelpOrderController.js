@@ -44,7 +44,7 @@ class HelpOrderController {
     const helps = await HelpOrder.findAll({
       limit: 10,
       offset: (page - 1) * 10,
-      where: { id },
+      where: { student_id: id },
     });
 
     return res.json(helps);

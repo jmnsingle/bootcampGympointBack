@@ -7,7 +7,7 @@ import Enrollment from '../models/Enrollment';
 
 class CheckinController {
   async store(req, res) {
-    const { student_id } = req.params;
+    const student_id = req.params.id;
 
     const studentExist = await Student.findByPk(student_id);
 
@@ -38,7 +38,7 @@ class CheckinController {
       checkinValid.dt_checkin = new Date();
     }
 
-    if (checkinValid.count > 20) {
+    if (checkinValid.count > 5) {
       return res
         .status(400)
         .json({ error: 'You have reached your weekly check-in limit' });
@@ -54,7 +54,7 @@ class CheckinController {
   }
 
   async show(req, res) {
-    const { student_id } = req.params;
+    const student_id = req.params.id;
 
     const studentExist = await Student.findByPk(student_id);
 
@@ -75,8 +75,8 @@ class CheckinController {
     return res.json({ checkins });
   }
 
-  async index(req, res) {
-    const { student_id } = req.params;
+  /* async index(req, res) {
+    const student_id = req.params.id;
 
     const studentExist = await Student.findByPk(student_id);
 
@@ -93,7 +93,7 @@ class CheckinController {
     }
 
     return res.json(enrollmentExist);
-  }
+  } */
 }
 
 export default new CheckinController();

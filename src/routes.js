@@ -3,6 +3,7 @@ import { Router } from 'express';
 import UserController from './app/controllers/UserController';
 import StudentController from './app/controllers/StudentController';
 import SessionController from './app/controllers/SessionController';
+import SessionStudentController from './app/controllers/SessionStudentController';
 import PlanController from './app/controllers/PlanController';
 import EnrollmentController from './app/controllers/EnrollmentController';
 import CheckinController from './app/controllers/CheckinController';
@@ -13,10 +14,11 @@ import authMidleware from './app/midlewares/auth';
 const routes = new Router();
 
 routes.post('/sessions', SessionController.store);
+routes.post('/sessionStudents', SessionStudentController.store);
 
-routes.post('/checkin/:student_id/checkins', CheckinController.store);
-routes.get('/checkin/:student_id/checkins', CheckinController.index);
-routes.get('/checkin/:student_id', CheckinController.show);
+routes.post('/checkins/:id', CheckinController.store);
+routes.get('/checkins/:id', CheckinController.show);
+// routes.get('/checkins/:id', CheckinController.index);
 
 routes.post('/help_orders/:id/question', HelpOrderController.store);
 routes.get('/help_orders/:id/answer', HelpOrderController.index);

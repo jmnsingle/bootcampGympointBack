@@ -18,6 +18,7 @@ routes.post('/sessionStudents', SessionStudentController.store);
 
 routes.post('/checkins/:id', CheckinController.store);
 routes.get('/checkins/:id', CheckinController.show);
+routes.get('/checkins/:id/profile', CheckinController.index);
 // routes.get('/checkins/:id', CheckinController.index);
 
 routes.post('/help_orders/:id/question', HelpOrderController.store);

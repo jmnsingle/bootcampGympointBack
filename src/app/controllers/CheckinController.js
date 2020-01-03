@@ -3,6 +3,7 @@ import { Op } from 'sequelize';
 
 import Checkin from '../models/Checkin';
 import Student from '../models/Student';
+import Plan from '../models/Plan';
 import Enrollment from '../models/Enrollment';
 
 class CheckinController {
@@ -38,7 +39,7 @@ class CheckinController {
       checkinValid.dt_checkin = new Date();
     }
 
-    if (checkinValid.count > 5) {
+    if (checkinValid.count > 4) {
       return res
         .status(400)
         .json({ error: 'You have reached your weekly check-in limit' });
@@ -51,6 +52,32 @@ class CheckinController {
     });
 
     return res.json(checkin);
+  }
+
+  async index(req, res) {
+    const student_id = req.params.id;
+
+    const studentExist = await Student.findByPk(student_id);
+
+    if (!studentExist) {
+      return res.status(400).json({ error: 'Student not found' });
+    }
+
+    const fullUser = await Enrollment.findOne({
+      include: [
+        {
+          model: Student,
+          as: 'student',
+          attributes: ['name', 'email', 'birth_date', 'weight', 'height'],
+        },
+        {
+          model: Plan,
+          as: 'plan',
+          attributes: ['title'],
+        },
+      ],
+    });
+    return res.json(fullUser);
   }
 
   async show(req, res) {

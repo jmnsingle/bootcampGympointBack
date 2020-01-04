@@ -72,6 +72,7 @@ class EnrollmentController {
       // text: 'Você acaba de realizar sua matrícula na Gympoint',
       template: 'welcome',
       context: {
+        id: estudentExist.id,
         student: estudentExist.name,
         plan: planExist.title,
         mensal: planExist.price,
@@ -213,6 +214,7 @@ class EnrollmentController {
       // text: 'Você acaba de realizar sua matrícula na Gympoint',
       template: 'update_enrollment',
       context: {
+        id: enrollmentExist.student.id,
         student: enrollmentExist.student.name,
         plan: plan.title,
         mensal: plan.price,
